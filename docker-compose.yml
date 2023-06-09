@@ -1,0 +1,32 @@
+version: '1'
+
+services:
+  api:
+    build:
+      dockerfile: ./Dockerfile
+      context: .                          #Contexto em que está sendo buildado / onde está a aplicação???
+    volumes:
+      - .:/home/node                      #onde guarda a aplicação
+      - /home/node/node_modules           #onde guarda as bibliotecas
+    ports:
+      - 4000:4000
+    command: yarn dev                     #comando para iniciar a aplicação/container
+    depends_on:
+      - postgres
+    
+  postgres:
+    image: postgres:13
+    container_name: small_view_database
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "small_view"
+    volumes:
+      - pgdata:/data/postgres
+
+volumes:
+  pgdata:
+    driver: local
